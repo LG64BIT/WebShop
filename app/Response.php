@@ -15,7 +15,10 @@ class Response
 
     public function getBody()
     {
-        return $this->body;
+        if(!str_ends_with($this->body, '.php'))
+            return $this->body;
+        include $this->body;
+        return null;
     }
 
     public function withStatus($statusCode) : Response

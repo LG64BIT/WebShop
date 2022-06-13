@@ -3,7 +3,6 @@ require_once "autoloader/autoloader.php";
 
 $app = new \app\App;
 $container = $app->getContainer();
-
 $container['config'] = function () {
     return [
             'db_driver' => 'mysql',
@@ -13,7 +12,6 @@ $container['config'] = function () {
             'db_pass' => 'Admin1234?',
     ];
 };
-
 $container['db'] = function ($c) {
     return new PDO(
         "{$c->config['db_driver']}:host={$c->config['db_host']};dbname={$c->config['db_name']};charset=UTF8",
@@ -21,20 +19,19 @@ $container['db'] = function ($c) {
         $c->config['db_pass']
     );
 };
-
 $container['errorHandler'] = function () {
     return function ($response) {
         return $response->setBody('Page not found')->withStatus(404);
     };
 };
-
-/*$container['errorHandler'] = function ($c) {
-    return function ($response) use ($c) {
-        return $response->withBody('Page not found')->withStatus(404);
-    };
-};*/
-
 $app->get('/', [\app\controllers\HomeController::class, 'index']);
-$app->get('/users', [new \app\controllers\UserController($container->db), 'index']);
+//$app->get('/users', [new \app\controllers\UserController($container->db), 'index']);
+$app->get('/home', [\app\controllers\HomeController::class, 'start']);
+
+$app->get('/register', [\app\controllers\RegisterController::class, 'register']);
+$app->post('/register/submit', [new \app\controllers\RegisterController($container->db), 'submit']);
+
+$app->get('/login', [\app\controllers\LoginController::class, 'login']);
+$app->get('/login/submit', [\app\controllers\LoginController::class, 'login']);
 
 $app->run();
