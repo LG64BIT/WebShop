@@ -13,6 +13,7 @@ class RegisterController
         if($db != null && isset($_POST['username'], $_POST['password']))
             $this->user = new User($db, $_POST['username'], $_POST['password']);
     }
+    
 
     public function register($response)
     {
