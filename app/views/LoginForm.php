@@ -1,5 +1,5 @@
 <?php
-
+include "Header.php";
 ?>
 
 <form method="post" action="login/submit">
@@ -10,3 +10,6 @@
     <input type="submit" value="Submit">
 </form>
 
+<?php
+include "Footer.php";
+?>

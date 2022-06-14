@@ -1,16 +1,31 @@
 <?php
 namespace app;
 
+use app\exceptions\PageNotFoundException;
+
 class Response
 {
     protected $headers = [];
     protected $body;
     protected $statusCode = 200;
 
-    public function setBody($body) : Response
+    public function setBody($body, $vars = []) : ?Response
     {
-        $this->body=$body;
+        ob_start();
+        try {
+            extract($vars, EXTR_SKIP);
+            if(!str_ends_with($body, '.php') || !file_exists($body))
+                throw new PageNotFoundException("Page not found!");
+                include $body;
+        } catch (\Exception $exception) {
+            ob_end_clean();
+            echo $exception->getMessage();
+        }
+        $this->body = ob_get_clean();
         return $this;
+
+        //$this->body=$body;
+        //return $this;
     }
 
     public function getBody()
