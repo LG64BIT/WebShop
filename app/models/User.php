@@ -23,7 +23,7 @@ class User extends Model
             $_SESSION['registerMessage'] = "Username must be between 3 and 30 characters long!";
             return false;
         }
-        $user = $this->db->prepare("SELECT * FROM users WHERE username= :username");
+        $user = self::$db->prepare("SELECT * FROM users WHERE username= :username");
         $user->execute(['username' =>$this->username]);
         $user = $user->fetch(PDO::FETCH_OBJ);
         if($user)
@@ -31,6 +31,7 @@ class User extends Model
             $_SESSION['registerMessage'] = "Username already exists";
             return false;
         }
+        unset($_SESSION['registerMessage']);
         return true;
     }
 
@@ -46,12 +47,13 @@ class User extends Model
             $_SESSION['registerMessage'] = "Passwords are not equal!";
             return false;
         }
+        unset($_SESSION['registerMessage']);
         return true;
     }
 
     public function register()
     {
-        $user = $this->db->prepare("INSERT INTO users (username, password, isAdmin) VALUES (:username, :password, :isAdmin)");
+        $user = self::$db->prepare("INSERT INTO users (username, password, isAdmin) VALUES (:username, :password, :isAdmin)");
         $user->execute([
             'username' => $this->username,
             'password' => $this->password,
@@ -61,12 +63,13 @@ class User extends Model
 
     public function login()
     {
-        $password = $this->db->prepare("SELECT password FROM users WHERE username = :username");
+        $password = self::$db->prepare("SELECT password FROM users WHERE username = :username");
         $password->execute(['username' => $this->username]);
         $password = $password->fetch();
-        if(strcmp($password[0], $this->password))
+        if(strcmp((string)$password[0], $this->password) == 0)
         {
             $_SESSION['login'] = true;
+            unset($_SESSION['loginMessage']);
             return true;
         }
         return false;

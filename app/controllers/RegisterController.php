@@ -22,7 +22,6 @@ class RegisterController
 
     public function submit($response)
     {
-        unset($_SESSION['registerMessage']);
         if(!$this->user->validateUsername() || !$this->user->validatePassword())
         {
             header("Location: ../register");

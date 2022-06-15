@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\exceptions\NoPermissionException;
 use app\models\User;
 use PDO;
 
@@ -17,19 +18,26 @@ class LoginController
 
     public function login($response)
     {
-        return $response->setBody('app/views/LoginForm.php');
+        if(!isset($_SESSION['login']))
+            return $response->setBody('app/views/LoginForm.php');
+        //return $response->setBody('app/views/ErrorPage.php');
+        throw new NoPermissionException('You do not have permission to do that!');
     }
     public function logout($response)
     {
-
-        return $response->setBody('app/views/LoginForm.php');
+        unset($_SESSION['login']);
+        header("Location: login");
     }
 
     public function submit($response)
     {
         if($this->user->login())
-            header("Location: /");
-        //echo "Invalid credentials!";
+        {
+            unset($_SESSION['loginMessage']);
+            header("Location: ../home");
+            return;
+        }
+        $_SESSION['loginMessage'] = "Invalid credentials!";
         header("Location: ../login");
     }
 }

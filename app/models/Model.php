@@ -4,10 +4,10 @@ namespace app\models;
 
  class Model
  {
-     protected PDO $db;
+     protected static PDO $db;
 
      public function __construct(PDO $db)
      {
-         $this->db = $db;
+         self::$db = $db;
      }
  }

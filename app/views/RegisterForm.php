@@ -1,6 +1,7 @@
 <?php
 include "Header.php";
 ?>
+<h2>Register</h2>
 <form method="post" action="register/submit">
     <label for="username">Username:</label><br>
     <input type="text" id="username" name="username"><br>
