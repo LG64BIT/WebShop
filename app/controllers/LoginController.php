@@ -23,13 +23,13 @@ class LoginController
         //return $response->setBody('app/views/ErrorPage.php');
         throw new NoPermissionException('You do not have permission to do that!');
     }
-    public function logout($response)
+    public function logout()
     {
-        unset($_SESSION['login']);
+        session_unset();
         header("Location: login");
     }
 
-    public function submit($response)
+    public function submit()
     {
         if($this->user->login())
         {

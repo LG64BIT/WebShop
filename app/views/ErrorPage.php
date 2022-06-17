@@ -7,6 +7,6 @@
 </head>
 <body>
 <h1>You are not suposed to be here!</h1>
-<p>Something went wrong!</p>
+<p><?php echo $_SESSION['exceptionMessage'] ?? ''; ?></p>
 </body>
 </html>

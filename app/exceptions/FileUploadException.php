@@ -1,8 +1,7 @@
 <?php
-
 namespace app\exceptions;
 
-class NoPermissionException extends \Exception
+class FileUploadException extends \Exception
 {
     public function __construct($message="Permission needed for that action", $code=0 , \Exception $previous=NULL)
     {

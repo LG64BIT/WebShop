@@ -15,6 +15,10 @@ namespace app\views;
 <section>
     <div class="callout">
         <ul class="menu">
+            <?php if(isset($_SESSION['isAdmin'])): ?>
+            <li><a href='addProduct' data-item='AddProduct'><b>Add product</b></a></li>
+            <li><a href='allUsers' data-item='AllUsers'><b>All users</b></a></li>
+            <?php endif; ?>
             <li><a href='home' data-item='Home'>Home</a></li>
             <li><a href='about' data-item='About'>About</a></li>
             <li><a href='contact' data-item='Contact'>Contact</a></li>

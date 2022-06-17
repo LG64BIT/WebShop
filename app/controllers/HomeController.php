@@ -15,9 +15,11 @@ class HomeController
 
     public function index($response)
     {
-        $model = new Model($this->db);
+        new Model($this->db);
         return $response->setBody('app/views/Home.php', [
             'products' => Product::getAllProducts(),
+            'productsPerPage' => 10,
+            'columnCount' => 2,
         ]);
     }
 }

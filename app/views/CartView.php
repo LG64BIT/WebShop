@@ -4,7 +4,7 @@ include "Header.php";
 <h1>Cart</h1>
 <div style="padding: 10px; max-width: 50%; margin: auto;">
 <?php
-    if(!isset($_SESSION['cart']))
+    if(!isset($_SESSION['cart']) || count($_SESSION['cart']['products']) <= 0)
         echo "<p>Cart Empty!</p>";
     else
     {
@@ -12,9 +12,13 @@ include "Header.php";
         {
             echo '<div style="background-color: burlywood; padding: 10px; margin: 10px;">Product:'
                 . $item[0]->name.' Price:' . $item[0]->price
-                . '$ Quantity:' . $_SESSION['cart'][$item[0]->id]['quantity'].'</div>';
+                . '$ Quantity:' . $_SESSION['cart'][$item[0]->id]['quantity'];
+            echo "<a class='btn btn-primary' href='cart/addQuantity?id=" . $item[0]->id . "'>+</a>";
+            echo "<a class='btn btn-primary' href='cart/removeQuantity?id=" . $item[0]->id . "'>-</a></div>";
         }
-        echo "<a class='btn btn-success' href='purchase'>Make purchase</a>";
+        echo "<p>Total price: " . $vars['totalPrice'] . "$</p>";
+        echo "<a class='btn btn-danger' href='cart/empty'>Empty cart</a>";
+        echo "<a class='btn btn-success' href='cart/order'>Make order</a>";
     }
 ?>
 </div>

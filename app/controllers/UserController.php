@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\exceptions\NoPermissionException;
 use app\models\User;
 use PDO;
 
@@ -13,10 +14,13 @@ class UserController
         $this->db = $db;
     }
 
-    public function index($response)
+    public function renderAllUsers($response)
     {
-        $users = $this->db->query("SELECT * FROM users")->fetchAll(PDO::FETCH_CLASS, User::class);
-
-        return $response->withJson($users);
+        if(!isset($_SESSION['isAdmin']))
+            throw new NoPermissionException('You do not have permission to do that!');
+        $users = $this->db->query("SELECT * FROM users")->fetchAll(PDO::FETCH_CLASS);
+        return $response->setBody('app/views/UserList.php', [
+            'users' => $users
+        ]);
     }
 }

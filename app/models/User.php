@@ -63,13 +63,16 @@ class User extends Model
 
     public function login()
     {
-        $password = self::$db->prepare("SELECT password FROM users WHERE username = :username");
-        $password->execute(['username' => $this->username]);
-        $password = $password->fetch();
-        if(strcmp((string)$password[0], $this->password) == 0)
+        $user = self::$db->prepare("SELECT * FROM users WHERE username = :username");
+        $user->execute(['username' => $this->username]);
+        $user = $user->fetch();
+        if(strcmp((string)$user['password'], $this->password) == 0) //change passwords to hashes
         {
             $_SESSION['login'] = true;
+            $_SESSION['id'] = $user['id'];
             unset($_SESSION['loginMessage']);
+            if($user['isAdmin'])
+                $_SESSION['isAdmin'] = true;
             return true;
         }
         return false;

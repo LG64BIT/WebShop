@@ -26,7 +26,6 @@ $container['errorHandler'] = function () {
     };
 };
 $app->get('/', [new \app\controllers\HomeController($container->db), 'index']);
-//$app->get('/users', [new \app\controllers\UserController($container->db), 'index']);
 $app->get('/home', [new \app\controllers\HomeController($container->db), 'index']);
 
 $app->get('/register', [\app\controllers\RegisterController::class, 'register']);
@@ -38,6 +37,15 @@ $app->get('/logout', [\app\controllers\LoginController::class, 'logout']);
 
 $app->get('/cart', [new \app\controllers\CartController($container->db), 'render']);
 $app->get('/cart/add', [new \app\controllers\CartController($container->db), 'add']);
+$app->get('/cart/empty', [new \app\controllers\CartController($container->db), 'empty']);
+$app->get('/cart/addQuantity', [new \app\controllers\CartController($container->db), 'addQuantity']);
+$app->get('/cart/removeQuantity', [new \app\controllers\CartController($container->db), 'removeQuantity']);
+$app->get('/cart/order', [new \app\controllers\CartController($container->db), 'order']);
 
+$app->get('/addProduct', [new \app\controllers\ProductController($container->db), 'add']);
+$app->get('/editProduct', [new \app\controllers\ProductController($container->db), 'edit']);
+$app->post('/addProduct/submit', [new \app\controllers\ProductController($container->db), 'submit']);
+
+$app->get('/allUsers', [new \app\controllers\UserController($container->db), 'renderAllUsers']);
 
 $app->run();
