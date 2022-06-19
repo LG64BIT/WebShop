@@ -47,5 +47,8 @@ $app->get('/editProduct', [new \app\controllers\ProductController($container->db
 $app->post('/addProduct/submit', [new \app\controllers\ProductController($container->db), 'submit']);
 
 $app->get('/allUsers', [new \app\controllers\UserController($container->db), 'renderAllUsers']);
+$app->get('/editUser', [new \app\controllers\UserController($container->db), 'editUser']);
+$app->post('/editUser/submit', [new \app\controllers\UserController($container->db), 'submit']);
+$app->get('/removeUser', [new \app\controllers\UserController($container->db), 'removeUser']);
 
 $app->run();

@@ -25,10 +25,10 @@ $count=1;
                     <?php echo $user->isAdmin ? "Admin" : "Customer"; ?>
                 </td>
                 <td>
-                    <a class="btn btn-success" href="/allUsers/editUser?id=<?php echo $user->id; ?>">+</a>
+                    <a class="btn btn-success" href="editUser?id=<?php echo $user->id; ?>">+</a>
                 </td>
                 <td>
-                    <a class="btn btn-danger" href="/allUsers/removeUser?id=<?php echo $user->id; ?>">-</a>
+                    <a class="btn btn-danger" href="removeUser?id=<?php echo $user->id; ?>">-</a>
                 </td>
             </tr>
         <?php endforeach; ?>
