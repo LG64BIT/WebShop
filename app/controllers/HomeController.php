@@ -25,6 +25,9 @@ class HomeController
 
     public function filter()
     {
-
+        if(isset($_POST['submit']))
+        {
+            //$this->db->query("SELECT * FROM products WHERE ") TODO...
+        }
     }
 }

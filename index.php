@@ -10,7 +10,7 @@ $container['config'] = function () {
             'db_host' => 'localhost',
             'db_name' => 'shop',
             'db_user' => 'root',
-            'db_pass' => '',
+            'db_pass' => 'Admin1234?',
     ];
 };
 $container['db'] = function ($c) {
@@ -45,6 +45,7 @@ $app->get('/cart/order', [new \app\controllers\CartController($container->db), '
 
 $app->get('/addProduct', [new \app\controllers\ProductController($container->db), 'add']);
 $app->get('/editProduct', [new \app\controllers\ProductController($container->db), 'edit']);
+$app->get('/removeProduct', [new \app\controllers\ProductController($container->db), 'remove']);
 $app->post('/addProduct/submit', [new \app\controllers\ProductController($container->db), 'submit']);
 
 $app->get('/allUsers', [new \app\controllers\UserController($container->db), 'renderAllUsers']);

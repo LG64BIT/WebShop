@@ -7,7 +7,7 @@ namespace app\views;
     <meta charset="UTF-8">
     <title>Web Shop</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/Inchoo praksa/WebShop/app/views/css/style.css"><!--linux->/app/views/css/style.css; windows->/Inchoo praksa/WebShop/app/views/css/style.css-->
+    <link rel="stylesheet" href="/app/views/css/style.css"><!--linux->/app/views/css/style.css; windows->/Inchoo praksa/WebShop/app/views/css/style.css-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
