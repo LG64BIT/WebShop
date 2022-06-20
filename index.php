@@ -27,6 +27,7 @@ $container['errorHandler'] = function () {
 };
 $app->get('/', [new \app\controllers\HomeController($container->db), 'index']);
 $app->get('/home', [new \app\controllers\HomeController($container->db), 'index']);
+$app->post('/home/filter', [new \app\controllers\HomeController($container->db), 'filter']);
 
 $app->get('/register', [\app\controllers\RegisterController::class, 'register']);
 $app->post('/register/submit', [new \app\controllers\RegisterController($container->db), 'submit']);

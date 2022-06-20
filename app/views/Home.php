@@ -3,6 +3,15 @@ include "Header.php";
 ?>
 <h1>Web Shop</h1>
 <div style="padding: 10px; max-width: 50%; margin: auto;">
+<form method="post" action="home/filter">
+    <label for="category">Category:</label>
+    <select id="category" name="category">
+        <?php foreach ($vars['categories'] as $category): ?>
+        <option value="<?php echo $category->id; ?>"><?php echo $category->name; ?></option>
+        <?php endforeach; ?>
+    </select><br>
+    <input class="btn btn-primary" type="submit" value="Submit">
+</form>
     <?php
     foreach ($vars['products'] as $product) {
         echo "<div style='padding: 10px; background-color: #e1b96a; margin: 10px 10px 10px 10px;'>

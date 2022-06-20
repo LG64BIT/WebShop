@@ -1,6 +1,7 @@
 <?php
 namespace app\controllers;
 
+use app\models\Categories;
 use app\models\Model;
 use app\models\Product;
 use PDO;
@@ -17,9 +18,13 @@ class HomeController
     {
         new Model($this->db);
         return $response->setBody('app/views/Home.php', [
-            'products' => Product::getAllProducts(),
-            'productsPerPage' => 10,
-            'columnCount' => 2,
+            'products' => Product::getProducts(10),
+            'categories' => Categories::GetAllCategories()
         ]);
+    }
+
+    public function filter()
+    {
+
     }
 }

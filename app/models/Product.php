@@ -21,10 +21,17 @@ class Product extends Model
         $this->image=$image;
     }
 
-    public static function getAllProducts()
+    public static function getProducts(int $count = 10)
     {
-        $products = self::$db->prepare("SELECT * FROM products");
-        $products->execute();
+        $products = self::$db->query("SELECT * FROM products LIMIT " . $count);
+        return $products->fetchAll(PDO::FETCH_CLASS);
+    }
+
+    public static function getProductsCategorized(int $count = 10)
+    {
+        $products = self::$db->query("SELECT products.id AS pId, products.name AS pName,
+        price, description, image, categories.id AS cId, categories.name AS cName
+        FROM products, categories, product_category WHERE products.id = product_id AND categories.id = category_id LIMIT " . $count);
         return $products->fetchAll(PDO::FETCH_CLASS);
     }
 
