@@ -17,17 +17,24 @@ class HomeController
     public function index($response)
     {
         new Model($this->db);
+        if(isset($_GET['category']))
+            return $this->filter($response);
+        return $this->showAll($response);
+    }
+
+    public function showAll($response)
+    {
         return $response->setBody('app/views/Home.php', [
             'products' => Product::getProducts(10),
             'categories' => Categories::GetAllCategories()
         ]);
     }
 
-    public function filter()
+    public function filter($response)
     {
-        if(isset($_POST['submit']))
-        {
-            //$this->db->query("SELECT * FROM products WHERE ") TODO...
-        }
+        return $response->setBody('app/views/Home.php', [
+            'products' => Product::getProductsCategorized($_GET['category'], 10),
+            'categories' => Categories::GetAllCategories()
+        ]);
     }
 }

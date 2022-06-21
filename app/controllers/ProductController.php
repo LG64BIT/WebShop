@@ -65,7 +65,7 @@ class ProductController
             $delete = $this->db->prepare("DELETE FROM product_category WHERE product_id=:id");
             $delete->execute(['id'=>$_GET['id']]);
         }
-        header("Location: ../home");
+        header("Location: home");
     }
 
     public function submit()

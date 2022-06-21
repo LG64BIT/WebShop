@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\exceptions\NoPermissionException;
 use app\models\User;
 use PDO;
 
@@ -17,7 +18,9 @@ class RegisterController
 
     public function register($response)
     {
-        return $response->setBody('app/views/RegisterForm.php');
+        if(!isset($_SESSION['login']))
+            return $response->setBody('app/views/RegisterForm.php');
+        throw new NoPermissionException('You do not have permission to do that!');
     }
 
     public function submit($response)

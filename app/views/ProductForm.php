@@ -23,7 +23,7 @@ include "Header.php";
     <label for="description">Description:</label><br>
     <textarea required id="description" name="description" rows="10" cols="100"><?php echo $vars['product']->description ?? ''; ?></textarea><br>
     <label for="upload">Upload image:</label>
-    <center><input <?php echo isset($vars['product']->image) ? '' : 'required'; ?> type="file" name="upload" id="upload" value="img.jpg"></center><br>
+    <center><input type="file" name="upload" id="upload" value="img.jpg"></center><br>
     <p><?php echo $vars['product']->image ?? ''; ?></p>
     <input type="hidden" name="script" value="<?php echo $vars['script']; ?>">
     <input class="btn btn-primary" type="submit" value="Submit" name="submit">

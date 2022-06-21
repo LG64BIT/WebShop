@@ -10,7 +10,7 @@ $container['config'] = function () {
             'db_host' => 'localhost',
             'db_name' => 'shop',
             'db_user' => 'root',
-            'db_pass' => 'Admin1234?',
+            'db_pass' => '',
     ];
 };
 $container['db'] = function ($c) {
@@ -27,7 +27,6 @@ $container['errorHandler'] = function () {
 };
 $app->get('/', [new \app\controllers\HomeController($container->db), 'index']);
 $app->get('/home', [new \app\controllers\HomeController($container->db), 'index']);
-$app->post('/home/filter', [new \app\controllers\HomeController($container->db), 'filter']);
 
 $app->get('/register', [\app\controllers\RegisterController::class, 'register']);
 $app->post('/register/submit', [new \app\controllers\RegisterController($container->db), 'submit']);
@@ -41,7 +40,8 @@ $app->get('/cart/add', [new \app\controllers\CartController($container->db), 'ad
 $app->get('/cart/empty', [new \app\controllers\CartController($container->db), 'empty']);
 $app->get('/cart/addQuantity', [new \app\controllers\CartController($container->db), 'addQuantity']);
 $app->get('/cart/removeQuantity', [new \app\controllers\CartController($container->db), 'removeQuantity']);
-$app->get('/cart/order', [new \app\controllers\CartController($container->db), 'order']);
+$app->post('/cart/order', [new \app\controllers\CartController($container->db), 'processOrder']);
+$app->get('/orderForm', [new \app\controllers\CartController($container->db), 'orderForm']);
 
 $app->get('/addProduct', [new \app\controllers\ProductController($container->db), 'add']);
 $app->get('/editProduct', [new \app\controllers\ProductController($container->db), 'edit']);

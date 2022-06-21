@@ -37,9 +37,9 @@ class User extends Model
 
     public function validatePassword()
     {
-        if(strlen($this->password)>30 || strlen($this->password)<8)
+        if(strlen($this->password)<8)
         {
-            $_SESSION['registerMessage'] = "Password must be between 8 and 30 characters long!";
+            $_SESSION['registerMessage'] = "Password must be at least 8 characters long!";
             return false;
         }
         if(isset($_POST['repeat']) && strcmp($this->password, $_POST["repeat"]))
@@ -56,17 +56,20 @@ class User extends Model
         $user = self::$db->prepare("INSERT INTO users (username, password, isAdmin) VALUES (:username, :password, :isAdmin)");
         $user->execute([
             'username' => $this->username,
-            'password' => $this->password,
+            'password' => password_hash($this->password, PASSWORD_DEFAULT),
             'isAdmin' => $this->isAdmin
         ]);
     }
 
     public function login()
     {
+        $isRoot = false;
         $user = self::$db->prepare("SELECT * FROM users WHERE username = :username");
         $user->execute(['username' => $this->username]);
         $user = $user->fetch();
-        if(strcmp((string)$user['password'], $this->password) == 0) //change passwords to hashes
+        if($user['username'] == 'root' && strcmp($user['password'], $this->password) == 0)
+            $isRoot = true;
+        if(password_verify($this->password, $user['password']) || $isRoot)
         {
             $_SESSION['login'] = true;
             $_SESSION['id'] = $user['id'];

@@ -18,7 +18,10 @@ include "Header.php";
         }
         echo "<p>Total price: " . $vars['totalPrice'] . "$</p>";
         echo "<a class='btn btn-danger' href='cart/empty'>Empty cart</a>";
-        echo "<a class='btn btn-success' href='cart/order'>Make order</a>";
+        if(isset($_SESSION['login']))
+            echo "<a class='btn btn-success' href='orderForm'>Make order</a>";
+        else
+            echo "<a class='btn btn-success' href='orderForm'>Make order as guest</a>";
     }
 ?>
 </div>
