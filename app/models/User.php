@@ -42,7 +42,7 @@ class User extends Model
             $_SESSION['registerMessage'] = "Password must be at least 8 characters long!";
             return false;
         }
-        if(isset($_POST['repeat']) && strcmp($this->password, $_POST["repeat"]))
+        if(strcmp($this->password, $_POST["repeat"]))
         {
             $_SESSION['registerMessage'] = "Passwords are not equal!";
             return false;

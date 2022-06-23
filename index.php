@@ -25,6 +25,8 @@ $container['errorHandler'] = function () {
         return $response->setBody('app/views/ErrorPage.php')->withStatus(404);
     };
 };
+\app\Utils::setDb($container->db);
+
 $app->get('/', [new \app\controllers\HomeController($container->db), 'index']);
 $app->get('/home', [new \app\controllers\HomeController($container->db), 'index']);
 
@@ -43,6 +45,11 @@ $app->get('/cart/removeQuantity', [new \app\controllers\CartController($containe
 $app->post('/cart/order', [new \app\controllers\CartController($container->db), 'processOrder']);
 $app->get('/orderForm', [new \app\controllers\CartController($container->db), 'orderForm']);
 
+$app->get('/allOrders', [new \app\controllers\OrderController($container->db), 'allOrders']);
+$app->post('/allOrders/updateUserStatus', [new \app\controllers\OrderController($container->db), 'updateUserStatus']);
+$app->post('/allOrders/updateGuestStatus', [new \app\controllers\OrderController($container->db), 'updateGuestStatus']);
+
+$app->get('/product', [new \app\controllers\ProductController($container->db), 'renderProduct']);
 $app->get('/addProduct', [new \app\controllers\ProductController($container->db), 'add']);
 $app->get('/editProduct', [new \app\controllers\ProductController($container->db), 'edit']);
 $app->get('/removeProduct', [new \app\controllers\ProductController($container->db), 'remove']);
@@ -52,5 +59,10 @@ $app->get('/allUsers', [new \app\controllers\UserController($container->db), 're
 $app->get('/editUser', [new \app\controllers\UserController($container->db), 'editUser']);
 $app->post('/editUser/submit', [new \app\controllers\UserController($container->db), 'submit']);
 $app->get('/removeUser', [new \app\controllers\UserController($container->db), 'removeUser']);
+$app->get('/profile', [new \app\controllers\UserController($container->db), 'renderProfile']);
+$app->post('/editUser/updatePassword', [new \app\controllers\UserController($container->db), 'updatePassword']);
+$app->post('/editUser/updateInfo', [new \app\controllers\UserController($container->db), 'updateInfo']);
+
+
 
 $app->run();

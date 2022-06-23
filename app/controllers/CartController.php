@@ -2,6 +2,7 @@
 namespace app\controllers;
 
 use app\exceptions\NoPermissionException;
+use DateTime;
 use PDO;
 
 class CartController
@@ -93,6 +94,7 @@ class CartController
 
     public function processOrder()
     {
+        $currentDate = new DateTime();
         if(isset($_SESSION['login']))
         {
             //process user orders
@@ -108,11 +110,13 @@ class CartController
             ]);
             //2. create order record in db
             foreach ($_SESSION['cart']['products'] as $product) {
-                $order = $this->db->prepare("INSERT INTO user_orders (user_id, product_id, quantity) VALUES (:user_id, :product_id, :quantity)");
+                $order = $this->db->prepare("INSERT INTO user_orders (user_id, product_id, status, quantity, date) VALUES (:user_id, :product_id, :status, :quantity, :date)");
                 $order->execute([
                     'user_id' => $_SESSION['id'],
                     'product_id' => $product[0]->id,
-                    'quantity' => $_SESSION['cart'][$product[0]->id]['quantity']
+                    'status' => 'pending',
+                    'quantity' => $_SESSION['cart'][$product[0]->id]['quantity'],
+                    'date' => $currentDate->format('Y-m-d H:i:s')
                 ]);
                 $this->decrementQuantity($product[0]->id, $_SESSION['cart'][$product[0]->id]['quantity']);
             }
@@ -130,11 +134,13 @@ class CartController
             ]);
             $guestId = $this->db->lastInsertId();
             foreach ($_SESSION['cart']['products'] as $product) {
-                $order = $this->db->prepare("INSERT INTO guest_orders (guest_id, product_id, quantity) VALUES (:guest_id, :product_id, :quantity)");
+                $order = $this->db->prepare("INSERT INTO guest_orders (guest_id, product_id, status, quantity, date) VALUES (:guest_id, :product_id, :status, :quantity, :date)");
                 $order->execute([
                     'guest_id' => $guestId,
                     'product_id' => $product[0]->id,
-                    'quantity' => $_SESSION['cart'][$product[0]->id]['quantity']
+                    'status' => 'pending',
+                    'quantity' => $_SESSION['cart'][$product[0]->id]['quantity'],
+                    'date' => $currentDate->format('Y-m-d H:i:s')
                 ]);
                 $this->decrementQuantity($product[0]->id, $_SESSION['cart'][$product[0]->id]['quantity']);
             }

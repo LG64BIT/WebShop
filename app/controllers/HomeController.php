@@ -26,15 +26,17 @@ class HomeController
     {
         return $response->setBody('app/views/Home.php', [
             'products' => Product::getProducts(10),
-            'categories' => Categories::GetAllCategories()
         ]);
     }
 
     public function filter($response)
     {
+        $category = $this->db->prepare("SELECT name FROM categories WHERE id=:id");
+        $category->execute(['id'=>$_GET['category']]);
+        $category = $category->fetchAll(PDO::FETCH_CLASS)[0];
         return $response->setBody('app/views/Home.php', [
-            'products' => Product::getProductsCategorized($_GET['category'], 10),
-            'categories' => Categories::GetAllCategories()
+            'products' => Product::getProductsByCategory($_GET['category']),
+            'currentCategoryName' => $category->name,
         ]);
     }
 }

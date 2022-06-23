@@ -30,20 +30,17 @@ class Product extends Model
         $this->id = $id;
     }
 
-    public static function getProducts(int $count = 10)
+    public static function getProducts()
     {
-        $products = self::$db->query("SELECT * FROM products LIMIT " . $count);
+        $products = self::$db->query("SELECT * FROM products");
         return $products->fetchAll(PDO::FETCH_CLASS);
     }
 
-    public static function getProductsCategorized($categoryId, int $count = 10)
+    public static function getProductsByCategory($categoryId)
     {
         $products = self::$db->prepare("SELECT products.id AS id, products.name AS name,
         price, description, image, quantity FROM products, categories, product_category WHERE
-        products.id = product_id AND categories.id = category_id AND categories.id = :id LIMIT " . $count);
-
-
-        //$products = self::$db->query("SELECT * FROM products WHERE product_category.id = :id AND products.id = product_category.product_id");
+        products.id = product_id AND categories.id = category_id AND categories.id = :id");
         $products->execute(['id' => $_GET['category']]);
         return $products->fetchAll(PDO::FETCH_CLASS);
     }

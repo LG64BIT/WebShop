@@ -4,3 +4,14 @@ body {
 ul {
     list-style-type: none;
 }
+.subnav-content {
+    display: none;
+    position: absolute;
+    background-color: #e1b96a;
+ }
+.subnav:hover .subnav-content {
+    display: block;
+}
+#navigation-footer {
+padding: 2rem;
+}

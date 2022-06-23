@@ -39,7 +39,7 @@ class ProductController
             $product->execute(['id'=>$_GET['id']]);
             $product = $product->fetchAll(PDO::FETCH_CLASS);
 
-            $categories = $this->db->prepare("SELECT categories.id, categories.name FROM categories WHERE categories.id =
+            $categories = $this->db->prepare("SELECT * FROM categories WHERE categories.id =
                             (SELECT category_id FROM product_category WHERE categories.id = category_id AND product_id = :id)");
             $categories->execute(['id'=>$_GET['id']]);
             $categories = $categories->fetchAll(PDO::FETCH_CLASS);
@@ -124,6 +124,23 @@ class ProductController
         }
         header("Location: ../home");
     }
+
+    public function renderProduct($response)
+    {
+        if(isset($_GET['id']))
+        {
+            new Model($this->db);
+            $product = $this->db->prepare("SELECT * FROM products WHERE id=:id");
+            $product->execute(['id' => $_GET['id']]);
+            $product = $product->fetchAll(PDO::FETCH_CLASS);
+            return $response->setBody('app/views/ProductView.php', [
+                'product' => $product[0],
+                'categories' => Categories::GetCategoriesOfProduct($_GET['id'])
+            ]);
+        }
+        header('Location: home');
+    }
+
     protected function checkPermission()
     {
         if(!isset($_SESSION['isAdmin']))

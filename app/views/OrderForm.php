@@ -12,8 +12,8 @@ include "Header.php";
     <label for="address">Delivery address:</label><br>
     <input required type="text" id="address" name="address" value="<?php echo $vars['user']->address ?? ''; ?>"><br><br>
     <label for="phone">Phone number:</label><br>
-    <input required type="tel" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" value="<?php echo $vars['user']->phone ?? ''; ?>" id="phone" name="phone"><br>
-    <small>Format: 095-523-6178</small><br><br>
+    <input required type="tel" pattern="[0-9]{3}/[0-9]{3}-[0-9]{4}" value="<?php echo $vars['user']->phone ?? ''; ?>" id="phone" name="phone"><br>
+    <small>Format: 095/523-6178</small><br><br>
     <input class="btn btn-success" type="submit" value="Order">
 </form>
 <p><?php echo $_SESSION['orderFormMessage'] ?? ''; ?></p>
