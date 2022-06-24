@@ -47,24 +47,14 @@ class UserController
             header('Location: ../editUser?id=' . $_POST['id']);
             return;
         }
-        $user = $this->db->prepare("SELECT * FROM users WHERE username= :username");
-        $user->execute(['username' => $_POST['username']]);
-        $user = $user->fetch(PDO::FETCH_OBJ);
-        if($user)
-        {
-            $_SESSION['userViewMessage'] = "Username already exists";
-            header('Location: ../editUser?id=' . $_POST['id']);
-            return;
-        }
-        unset($_SESSION['userViewMessage']);
-
         $user = $this->db->prepare("UPDATE users SET username=:username, isAdmin=:isAdmin WHERE id=:id");
         $user->execute([
             'username'=>$_POST['username'],
             'isAdmin'=>$_POST['isAdmin'],
             'id'=>$_POST['id']
         ]);
-        header('Location: ../allUsers');
+        $_SESSION['userViewMessage'] = "User successfully updated!";
+        header('Location: ../editUser?id=' . $_POST['id']);
     }
 
     public function removeUser()

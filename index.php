@@ -25,7 +25,6 @@ $container['errorHandler'] = function () {
         return $response->setBody('app/views/ErrorPage.php')->withStatus(404);
     };
 };
-\app\Utils::setDb($container->db);
 
 $app->get('/', [new \app\controllers\HomeController($container->db), 'index']);
 $app->get('/home', [new \app\controllers\HomeController($container->db), 'index']);
@@ -64,7 +63,5 @@ $app->get('/removeUser', [new \app\controllers\UserController($container->db), '
 $app->get('/profile', [new \app\controllers\UserController($container->db), 'renderProfile']);
 $app->post('/editUser/updatePassword', [new \app\controllers\UserController($container->db), 'updatePassword']);
 $app->post('/editUser/updateInfo', [new \app\controllers\UserController($container->db), 'updateInfo']);
-
-
 
 $app->run();
