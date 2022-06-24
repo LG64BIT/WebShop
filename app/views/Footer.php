@@ -1,3 +1,3 @@
-<p><b>Web Shop</b> all rights reserved</p>
+<p><b>Hardware Shop</b> shopping with ease</p>
 </body>
 </html>

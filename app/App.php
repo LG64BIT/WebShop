@@ -43,7 +43,7 @@ class App
         $router->setPath($_SERVER['PATH_INFO'] ?? '/');
         try {
             $response = $router->getResponse();
-            //return $this->respond($this->process($response)); //uncomment for redirecting to ErrorPage if exception happens somewhere
+            return $this->respond($this->process($response)); //uncomment for redirecting to ErrorPage if exception happens somewhere
         }catch (\Exception $e)
         {
             if($this->container->offsetExists('errorHandler'))

@@ -16,16 +16,13 @@ class Response
             extract($vars, EXTR_SKIP);
             if(!str_ends_with($body, '.php') || !file_exists($body))
                 throw new PageNotFoundException("Page not found!");
-                include $body;
+            include $body;
         } catch (\Exception $exception) {
             ob_end_clean();
             echo $exception->getMessage();
         }
         $this->body = ob_get_clean();
         return $this;
-
-        //$this->body=$body;
-        //return $this;
     }
 
     public function getBody()

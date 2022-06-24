@@ -10,8 +10,8 @@ foreach ($vars['categories'] as $category)
 echo "</p>";
 echo "<img style='max-width: 50%' src= 'app/images/" . $vars['product']->image . "'alt='" . $vars['product']->image . "'><br>";
 echo '<h3 class="text-danger">' . ($vars['product']->quantity <= 3 && $vars['product']->quantity > 0 ? 'Only ' : '');
-echo $vars['product']->quantity . ' left</h3>';
-echo '<h4>' . $vars['product']->description . '</h4>';
+echo $vars['product']->quantity . ' left</h3><br>';
+echo '<h4 style="white-space: pre-line">' . $vars['product']->description . '</h4>';
 echo '<h3>Price: ' . $vars['product']->price . '$</h3><br>';
 if(isset($_SESSION['isAdmin']))
     echo "<a class='btn btn-success' href='editProduct?id=". $vars['product']->id . "'>Edit</a>";

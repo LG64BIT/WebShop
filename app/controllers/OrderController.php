@@ -22,6 +22,19 @@ class OrderController
             'guestOrders' => $guestOrders
         ]);
     }
+
+    public function showHistory($response)
+    {
+        if(!isset($_SESSION['login']))
+            throw new NoPermissionException;
+        $userOrders = $this->db->prepare("SELECT user_id, username, GROUP_CONCAT(user_orders.quantity, 'x ', name SEPARATOR '<br>') AS productInfo, status, date FROM user_orders LEFT OUTER JOIN users ON user_id=users.id LEFT OUTER JOIN products ON product_id=products.id WHERE user_id=:id GROUP BY date ORDER BY date DESC");
+        $userOrders->execute(['id' => $_SESSION['id']]);
+        $userOrders = $userOrders->fetchAll(\PDO::FETCH_CLASS);
+        return $response->setBody('app/views/OrderHistoryView.php', [
+            'userOrders' => $userOrders
+        ]);
+    }
+
     public function updateUserStatus()
     {
         if(!isset($_SESSION['isAdmin']))

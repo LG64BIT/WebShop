@@ -1,16 +1,5 @@
 <?php
 namespace app\views;
-
-use app\models\Categories;
-use app\models\Model;
-use app\Utils;
-
-new Model(Utils::getDb());
-$allCategories = Categories::GetAllCategories();
-$mainCategories = [];
-foreach ($allCategories as $category)
-    if($category->parent_id == 0)
-        $mainCategories[] = $category;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,22 +34,11 @@ foreach ($allCategories as $category)
         <ul class="nav nav-pills" style="display: inline-block; float: right">
             <li><a href='addProduct' data-item='AddProduct'><b>Add product</b></a></li>
             <li><a href='allUsers' data-item='AllUsers'><b>All users</b></a></li>
-            <li><a href='allOrders' data-item='allOrders'><b>All orders</b></a></li>
+            <li><a href='allOrders' data-item='AllOrders'><b>All orders</b></a></li>
+        </ul>
+    <?php elseif (isset($_SESSION['login'])): ?>
+        <ul class="nav nav-pills" style="display: inline-block; float: right">
+            <li><a href='orderHistory' data-item='OrderHistory'><b>Order history</b></a></li>
         </ul>
     <?php endif; ?>
-</section>
-<section>
-        <ul>
-            <?php foreach ($mainCategories as $mainCategory): ?>
-            <div class="subnav" style="display: inline-block;">
-                <li><a class="btn" href='home?category=<?php echo $mainCategory->id ?>'><b><?php echo $mainCategory->name ?></b></a></li>
-                <div class="subnav-content">
-                    <?php foreach ($allCategories as $category)
-                        if($category->parent_id == $mainCategory->id): ?>
-                    <a class="btn" href='home?category=<?php echo $category->id ?>'><?php echo $category->name ?></a>
-                    <?php endif; ?>
-                </div>
-            </div>
-            <?php endforeach; ?>
-        </ul>
 </section>

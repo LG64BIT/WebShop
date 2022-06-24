@@ -29,6 +29,7 @@ $container['errorHandler'] = function () {
 
 $app->get('/', [new \app\controllers\HomeController($container->db), 'index']);
 $app->get('/home', [new \app\controllers\HomeController($container->db), 'index']);
+$app->get('/about', [new \app\controllers\HomeController($container->db), 'renderAbout']);
 
 $app->get('/register', [\app\controllers\RegisterController::class, 'register']);
 $app->post('/register/submit', [new \app\controllers\RegisterController($container->db), 'submit']);
@@ -46,6 +47,7 @@ $app->post('/cart/order', [new \app\controllers\CartController($container->db), 
 $app->get('/orderForm', [new \app\controllers\CartController($container->db), 'orderForm']);
 
 $app->get('/allOrders', [new \app\controllers\OrderController($container->db), 'allOrders']);
+$app->get('/orderHistory', [new \app\controllers\OrderController($container->db), 'showHistory']);
 $app->post('/allOrders/updateUserStatus', [new \app\controllers\OrderController($container->db), 'updateUserStatus']);
 $app->post('/allOrders/updateGuestStatus', [new \app\controllers\OrderController($container->db), 'updateGuestStatus']);
 

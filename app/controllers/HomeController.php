@@ -26,6 +26,7 @@ class HomeController
     {
         return $response->setBody('app/views/Home.php', [
             'products' => Product::getProducts(10),
+            'categories' => Categories::GetAllCategories()
         ]);
     }
 
@@ -37,6 +38,12 @@ class HomeController
         return $response->setBody('app/views/Home.php', [
             'products' => Product::getProductsByCategory($_GET['category']),
             'currentCategoryName' => $category->name,
+            'categories' => Categories::GetAllCategories()
         ]);
+    }
+
+    public function renderAbout($response)
+    {
+        return $response->setBody('app/views/About.php');
     }
 }

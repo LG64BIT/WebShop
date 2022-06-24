@@ -1,7 +1,28 @@
 <?php
 include "Header.php";
+
+$allCategories = $vars['categories'];
+$mainCategories = [];
+foreach ($allCategories as $category)
+    if($category->parent_id == 0)
+        $mainCategories[] = $category;
 ?>
-<h1>Web Shop</h1>
+<section>
+    <ul>
+    <?php foreach ($mainCategories as $mainCategory): ?>
+        <div class="subnav" style="display: inline-block;">
+            <li><a class="btn" href='home?category=<?php echo $mainCategory->id ?>'><b><?php echo $mainCategory->name ?></b></a></li>
+            <div class="subnav-content">
+            <?php foreach ($allCategories as $category)
+                if($category->parent_id == $mainCategory->id): ?>
+                    <a class="btn" href='home?category=<?php echo $category->id ?>'><?php echo $category->name ?></a>
+                <?php endif; ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+    </ul>
+</section>
+<h1>Hardware Shop</h1>
 <h2><?php echo isset($vars['currentCategoryName']) ? "Category: " . $vars['currentCategoryName'] : ''; ?></h2>
 <div style="padding: 10px; max-width: 80%; margin: auto;">
 <?php
@@ -13,7 +34,6 @@ foreach ($vars['products'] as $product) {
     echo "<a href='product?id=" . $product->id . "'><img style='max-width: 100%; width:500px; height:300px;' src= 'app/images/" . $product->image . "'alt='" . $product->image . "'><br></a>";
     echo '<h4>' . $product->name . '<br><br>';
     echo 'Price: ' . $product->price . '$<br>';
-    //echo $product->description . '</h4>';
     echo '<h3 class="text-danger">' . ($product->quantity <= 3 && $product->quantity > 0 ? 'Only ' : '');
     echo $product->quantity . ' left</h3>';
     if(isset($_SESSION['isAdmin']))
