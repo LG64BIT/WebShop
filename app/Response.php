@@ -1,23 +1,25 @@
 <?php
-namespace app;
+namespace App;
 
 use app\exceptions\PageNotFoundException;
+use Exception;
 
 class Response
 {
     protected $headers = [];
     protected $body;
-    protected $statusCode = 200;
+    protected int $statusCode = 200;
 
     public function setBody($body, $vars = []) : ?Response
     {
         ob_start();
         try {
             extract($vars, EXTR_SKIP);
-            if(!str_ends_with($body, '.php') || !file_exists($body))
+            if (!file_exists($body)) {
                 throw new PageNotFoundException("Page not found!");
+            }
             include $body;
-        } catch (\Exception $exception) {
+        } catch (Exception $exception) {
             ob_end_clean();
             echo $exception->getMessage();
         }
@@ -27,8 +29,9 @@ class Response
 
     public function getBody()
     {
-        if(!str_ends_with($this->body, '.php'))
+        if(!str_ends_with($this->body, '.php')) {
             return $this->body;
+        }
         include $this->body;
         return null;
     }

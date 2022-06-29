@@ -1,6 +1,3 @@
-<?php
-namespace app\views;
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +11,7 @@ namespace app\views;
 </head>
 <body>
 <section style="background-color: #e1b96a">
-        <?php if (isset($_SESSION['login'])):?>
+        <?php if (isset($_SESSION['id'])):?>
         <ul class="nav nav-pills" style="display: inline-block; float: left">
             <li><a href='profile' data-item='Profile'><b>Profile</b></a></li>
         </ul>
@@ -23,7 +20,7 @@ namespace app\views;
             <li><a href='home' data-item='Home'>Home</a></li>
             <li><a href='cart' data-item='Cart'>Cart</a></li>
             <li><a href='about' data-item='About'>About</a></li>
-            <?php if (!isset($_SESSION['login'])):?>
+            <?php if (!isset($_SESSION['id'])):?>
             <li><a href='login' data-item='Login'>Login</a></li>
             <li><a href='register' data-item='Register'>Register</a></li>
             <?php else: ?>
@@ -36,7 +33,7 @@ namespace app\views;
             <li><a href='allUsers' data-item='AllUsers'><b>All users</b></a></li>
             <li><a href='allOrders' data-item='AllOrders'><b>All orders</b></a></li>
         </ul>
-    <?php elseif (isset($_SESSION['login'])): ?>
+    <?php elseif (isset($_SESSION['id'])): ?>
         <ul class="nav nav-pills" style="display: inline-block; float: right">
             <li><a href='orderHistory' data-item='OrderHistory'><b>Order history</b></a></li>
         </ul>

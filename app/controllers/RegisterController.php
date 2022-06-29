@@ -1,36 +1,34 @@
 <?php
 
-namespace app\controllers;
+namespace App\controllers;
 
-use app\exceptions\NoPermissionException;
-use app\models\User;
-use PDO;
+use App\exceptions\NoPermissionException;
+use App\models\User;
 
 class RegisterController
 {
-    protected User $user;
-
-    public function __construct(PDO $db = null)
-    {
-        if($db != null && isset($_POST['username'], $_POST['password']))
-            $this->user = new User($db, trim($_POST['username']), trim($_POST['password']));
-    }
-
     public function register($response)
     {
-        if(!isset($_SESSION['login']))
+        if(!isset($_SESSION['id'])) {
             return $response->setBody('app/views/RegisterForm.php');
+        }
         throw new NoPermissionException('You do not have permission to do that!');
     }
 
-    public function submit($response)
+    public function submit()
     {
-        if(!$this->user->validateUsername() || !$this->user->validatePassword())
-        {
+        if(!isset($_POST['email'], $_POST['password'])) {
+            $_SESSION['registerMessage'] = "Empty credentials!";
             header("Location: ../register");
             return;
         }
-        $this->user->register();
+        $user = new User(trim($_POST['email']), trim($_POST['password']));
+        if(!$user->validateEmail() || !$user->validatePassword()) {
+            header("Location: ../register");
+            return;
+        }
+        $user->register();
+        unset($_SESSION['registerMessage']);
         header("Location: ../login");
     }
 }

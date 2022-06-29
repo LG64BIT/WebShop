@@ -1,26 +1,17 @@
 <?php
 
-namespace app\controllers;
+namespace App\controllers;
 
-use app\exceptions\NoPermissionException;
-use app\models\User;
-use PDO;
+use App\exceptions\NoPermissionException;
+use App\models\User;
 
 class LoginController
 {
-    protected User $user;
-
-    public function __construct(PDO $db = null)
-    {
-        if($db != null && isset($_POST['username'], $_POST['password']))
-            $this->user = new User($db, $_POST['username'], $_POST['password']);
-    }
-
     public function login($response)
     {
-        if(!isset($_SESSION['login']))
+        if(!isset($_SESSION['id'])) {
             return $response->setBody('app/views/LoginForm.php');
-        //return $response->setBody('app/views/ErrorPage.php');
+        }
         throw new NoPermissionException('You do not have permission to do that!');
     }
     
@@ -32,8 +23,12 @@ class LoginController
 
     public function submit()
     {
-        if($this->user->login())
-        {
+        if(!isset($_POST['email'], $_POST['password'])) {
+            header("Location: ../login");
+            return;
+        }
+        $user = new User($_POST['email'], $_POST['password']);
+        if($user->login()) {
             unset($_SESSION['loginMessage']);
             header("Location: ../home");
             return;

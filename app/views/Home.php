@@ -11,11 +11,11 @@ foreach ($allCategories as $category)
     <ul>
     <?php foreach ($mainCategories as $mainCategory): ?>
         <div class="subnav" style="display: inline-block;">
-            <li><a class="btn" href='home?category=<?php echo $mainCategory->id ?>'><b><?php echo $mainCategory->name ?></b></a></li>
+            <li><a class="btn" href='home?category=<?php echo $mainCategory->id ?>'><b><?= $mainCategory->name ?></b></a></li>
             <div class="subnav-content">
             <?php foreach ($allCategories as $category)
                 if($category->parent_id == $mainCategory->id): ?>
-                    <a class="btn" href='home?category=<?php echo $category->id ?>'><?php echo $category->name ?></a>
+                    <a class="btn" href='home?category=<?php echo $category->id ?>'><?= $category->name ?></a>
                 <?php endif; ?>
             </div>
         </div>
@@ -23,7 +23,7 @@ foreach ($allCategories as $category)
     </ul>
 </section>
 <h1>Hardware Shop</h1>
-<h2><?php echo isset($vars['currentCategoryName']) ? "Category: " . $vars['currentCategoryName'] : ''; ?></h2>
+<h2><?= isset($vars['currentCategoryName']) ? "Category: " . $vars['currentCategoryName'] : '' ?></h2>
 <div style="padding: 10px; max-width: 80%; margin: auto;">
 <?php
 $counter = 0;
@@ -41,7 +41,14 @@ foreach ($vars['products'] as $product) {
     if($product->quantity <= 0)
         echo "<a disabled title='Product not in stock!' class='btn btn-primary'>Add to cart</a></div>";
     else
-        echo "<a class='btn btn-primary' href='cart/add?id=". $product->id . "'>Add to cart</a></div>";
+    {
+        echo '<form style="display: inline" method="get" action="cart/add">';
+        //echo "<a class='btn btn-primary' href='cart/add?id=". $product->id . "'>Add to cart</a></div>";
+        echo '<input hidden name="id" value="' . $product->id . '">';
+        echo '<input class="btn btn-primary" type="submit" value="Add to cart">';
+        echo '<input type="number" name="qty" style="width: 40px;">';
+        echo '</form></div>';
+    }
     if($counter%2==1)
         echo "</div>";
     $counter++;
@@ -51,3 +58,4 @@ foreach ($vars['products'] as $product) {
 <?php
 include "Footer.php";
 ?>
+

@@ -1,9 +1,10 @@
 <?php
-namespace app\models;
+namespace App\models;
 
+use App\Utils;
 use PDO;
 
-class Product extends Model
+class Product
 {
     protected $id;
     protected $name;
@@ -13,9 +14,8 @@ class Product extends Model
     protected $image;
     protected $categories = [];
 
-    public function __construct(PDO $db, $name, $price, $description, $quantity, $categories, $image, $id = 0)
+    public function __construct($name, $price, $description, $quantity, $categories, $image, $id = 0)
     {
-        parent::__construct($db);
         $this->id=$id;
         $this->name=$name;
         $this->price=$price;
@@ -32,24 +32,25 @@ class Product extends Model
 
     public static function getProducts()
     {
-        $products = self::$db->query("SELECT * FROM products");
+        $products = Utils::getDb()->query("SELECT * FROM products");
         return $products->fetchAll(PDO::FETCH_CLASS);
     }
 
     public static function getProductsByCategory($categoryId)
     {
-        $products = self::$db->prepare("SELECT products.id AS id, products.name AS name,
+        $products = Utils::getDb()->prepare("SELECT products.id AS id, products.name AS name,
         price, description, image, quantity FROM products, categories, product_category WHERE
         products.id = product_id AND categories.id = category_id AND categories.id = :id");
-        $products->execute(['id' => $_GET['category']]);
+        $products->execute(['id' => $categoryId]);
         return $products->fetchAll(PDO::FETCH_CLASS);
     }
 
     public function insertIntoDataBase()
     {
-        if($this->image == '')
+        if($this->image == '') {
             $this->image = 'default.png';
-        $product = self::$db->prepare("INSERT INTO products (name, price, description, quantity, image) VALUES (:name, :price, :description, :quantity, :image)");
+        }
+        $product = Utils::getDb()->prepare("INSERT INTO products (name, price, description, quantity, image) VALUES (:name, :price, :description, :quantity, :image)");
         $product->execute([
             'name' => $this->name,
             'price' => $this->price,
@@ -61,9 +62,8 @@ class Product extends Model
 
     public function updateDatabase()
     {
-        if($this->image != '')
-        {
-            $product = self::$db->prepare("UPDATE products SET name=:name, price=:price, description=:description, quantity=:quantity, image=:image WHERE id=:id");
+        if($this->image != '') {
+            $product = Utils::getDb()->prepare("UPDATE products SET name=:name, price=:price, description=:description, quantity=:quantity, image=:image WHERE id=:id");
             $product->execute([
                 'id' => $this->id,
                 'name' => $this->name,
@@ -73,9 +73,8 @@ class Product extends Model
                 'image' => $this->image
             ]);
         }
-        else
-        {
-            $product = self::$db->prepare("UPDATE products SET name=:name, price=:price, description=:description, quantity=:quantity WHERE id=:id");
+        else {
+            $product = Utils::getDb()->prepare("UPDATE products SET name=:name, price=:price, description=:description, quantity=:quantity WHERE id=:id");
             $product->execute([
                 'id' => $this->id,
                 'name' => $this->name,

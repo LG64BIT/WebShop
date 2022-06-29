@@ -1,34 +1,32 @@
 <?php
-namespace app\models;
+namespace App\models;
 
+use App\Utils;
 use PDO;
 
-class User extends Model
+class User
 {
     protected $password;
-    protected $username;
+    protected $email;
     protected $isAdmin = 0;
 
-    public function __construct(PDO $db, $username, $password)
+    public function __construct($email, $password)
     {
-        parent::__construct($db);
-        $this->username = $username;
+        $this->email = $email;
         $this->password = $password;
     }
 
-    public function validateUsername()
+    public function validateEmail()
     {
-        if(strlen($this->username)>30 || strlen($this->username)<3)
-        {
-            $_SESSION['registerMessage'] = "Username must be between 3 and 30 characters long!";
+        if(strlen($this->email)>255 || strlen($this->email)<5) {
+            $_SESSION['registerMessage'] = "Email must be between 5 and 255 characters long!";
             return false;
         }
-        $user = self::$db->prepare("SELECT * FROM users WHERE username= :username");
-        $user->execute(['username' =>$this->username]);
+        $user = Utils::getDb()->prepare("SELECT * FROM users WHERE email=:email");
+        $user->execute(['email' =>$this->email]);
         $user = $user->fetch(PDO::FETCH_OBJ);
-        if($user)
-        {
-            $_SESSION['registerMessage'] = "Username already exists";
+        if($user) {
+            $_SESSION['registerMessage'] = "Email already exists";
             return false;
         }
         unset($_SESSION['registerMessage']);
@@ -37,13 +35,11 @@ class User extends Model
 
     public function validatePassword()
     {
-        if(strlen($this->password)<8)
-        {
+        if(strlen($this->password)<8) {
             $_SESSION['registerMessage'] = "Password must be at least 8 characters long!";
             return false;
         }
-        if(strcmp($this->password, $_POST["repeat"]))
-        {
+        if(strcmp($this->password, $_POST["repeat"])) {
             $_SESSION['registerMessage'] = "Passwords are not equal!";
             return false;
         }
@@ -53,9 +49,9 @@ class User extends Model
 
     public function register()
     {
-        $user = self::$db->prepare("INSERT INTO users (username, password, isAdmin) VALUES (:username, :password, :isAdmin)");
+        $user = Utils::getDb()->prepare("INSERT INTO users (email, password, isAdmin) VALUES (:email, :password, :isAdmin)");
         $user->execute([
-            'username' => $this->username,
+            'email' => $this->email,
             'password' => password_hash($this->password, PASSWORD_DEFAULT),
             'isAdmin' => $this->isAdmin
         ]);
@@ -63,19 +59,15 @@ class User extends Model
 
     public function login()
     {
-        $isRoot = false;
-        $user = self::$db->prepare("SELECT * FROM users WHERE username = :username");
-        $user->execute(['username' => $this->username]);
+        $user = Utils::getDb()->prepare("SELECT * FROM users WHERE email = :email");
+        $user->execute(['email' => $this->email]);
         $user = $user->fetch();
-        if($user['username'] == 'root' && strcmp($user['password'], $this->password) == 0)
-            $isRoot = true;
-        if(password_verify($this->password, $user['password']) || $isRoot)
-        {
-            $_SESSION['login'] = true;
+        if(password_verify($this->password, $user['password'])) {
             $_SESSION['id'] = $user['id'];
             unset($_SESSION['loginMessage']);
-            if($user['isAdmin'])
+            if($user['isAdmin']) {
                 $_SESSION['isAdmin'] = true;
+            }
             return true;
         }
         return false;

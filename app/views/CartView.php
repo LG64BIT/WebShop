@@ -4,21 +4,21 @@ include "Header.php";
 <h1>Cart</h1>
 <div style="padding: 10px; max-width: 50%; margin: auto;">
 <?php
-    if(!isset($_SESSION['cart']) || count($_SESSION['cart']['products']) <= 0)
-        echo "<p>Cart Empty!</p>";
+    if(isset($vars['empty']))
+        echo '<p>' . $vars['empty'] . '</p>';
     else
     {
-        foreach ($_SESSION['cart']['products'] as $item)
+        foreach ($vars['products'] as $item)
         {
             echo '<div style="background-color: burlywood; padding: 10px; margin: 10px;">Product:'
-                . $item[0]->name.' Price:' . $item[0]->price
-                . '$ Quantity:' . $_SESSION['cart'][$item[0]->id]['quantity'];
-            echo "<a class='btn btn-primary' href='cart/addQuantity?id=" . $item[0]->id . "'>+</a>";
-            echo "<a class='btn btn-primary' href='cart/removeQuantity?id=" . $item[0]->id . "'>-</a></div>";
+                . $item->name.' Price:' . $item->price
+                . '$ Quantity:' . $_SESSION['cart'][$item->id];
+            echo "<a class='btn btn-primary' href='cart/addQuantity?id=" . $item->id . "'>+</a>";
+            echo "<a class='btn btn-primary' href='cart/removeQuantity?id=" . $item->id . "'>-</a></div>";
         }
         echo "<p>Total price: " . $vars['totalPrice'] . "$</p>";
         echo "<a class='btn btn-danger' href='cart/empty'>Empty cart</a>";
-        if(isset($_SESSION['login']))
+        if(isset($_SESSION['id']))
             echo "<a class='btn btn-success' href='orderForm'>Make order</a>";
         else
             echo "<a class='btn btn-success' href='orderForm'>Make order as guest</a>";

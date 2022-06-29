@@ -12,26 +12,18 @@ if(count($vars['userOrders']) == 0){
     <table class="table" style="margin-left: auto; margin-right: auto;">
         <tr>
             <th>#</th>
-            <th style="text-align: center">Username</th>
             <th style="text-align: center">Products</th>
+            <th style="text-align: center">Address</th>
             <th style="text-align: center">Date</th>
             <th style="text-align: center">Status</th>
         </tr>
         <?php foreach ($vars['userOrders'] as $order): ?>
             <tr>
-                <th><?php echo $count++; ?></th>
-                <td>
-                    <?php echo $order->username ?? 'deleted user'; ?>
-                </td>
-                <td>
-                    <?php echo $order->productInfo; ?>
-                </td>
-                <td>
-                    <?php echo $order->date; ?>
-                </td>
-                <td>
-                    <?php echo $order->status; ?>
-                </td>
+                <th><?= $count++ ?></th>
+                <td><?= $order->productInfo ?></td>
+                <td><?= $order->address ?></td>
+                <td><?= $order->date ?></td>
+                <td><?= $order->status ?></td>
             </tr>
         <?php endforeach; ?>
     </table>
@@ -39,3 +31,4 @@ if(count($vars['userOrders']) == 0){
 <?php
 include "Footer.php";
 ?>
+

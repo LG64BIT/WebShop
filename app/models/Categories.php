@@ -1,24 +1,20 @@
 <?php
-namespace app\models;
+namespace App\models;
 
+use App\Utils;
 use PDO;
 
-class Categories extends Model
+class Categories
 {
-    public function __construct(PDO $db)
+    public static function getAllCategories()
     {
-        parent::__construct($db);
-    }
-
-    public static function GetAllCategories()
-    {
-        $categories = self::$db->query("SELECT * FROM categories");
+        $categories = Utils::getDb()->query("SELECT * FROM categories");
         return $categories->fetchAll(PDO::FETCH_CLASS);
     }
 
-    public static function GetCategoriesOfProduct($productId)
+    public static function getCategoriesOfProduct($productId)
     {
-        $categories = self::$db->prepare("SELECT categories.id, categories.name FROM products, categories, product_category WHERE categories.id=category_id AND products.id=:id AND product_id=:id");
+        $categories = Utils::getDb()->prepare("SELECT categories.id, categories.name FROM products, categories, product_category WHERE categories.id=category_id AND products.id=:id AND product_id=:id");
         $categories->execute(['id' => $productId]);
         return $categories->fetchAll(PDO::FETCH_CLASS);
     }

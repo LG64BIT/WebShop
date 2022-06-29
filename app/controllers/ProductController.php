@@ -1,28 +1,23 @@
 <?php
-namespace app\controllers;
+namespace App\controllers;
 
-use app\exceptions\FileUploadException;
-use app\exceptions\NoPermissionException;
-use app\exceptions\PageNotFoundException;
-use app\models\Categories;
-use app\models\Model;
-use app\models\Product;
+use App\exceptions\FileUploadException;
+use App\exceptions\NoPermissionException;
+use App\exceptions\PageNotFoundException;
+use App\models\Categories;
+use App\models\Product;
+use App\Utils;
 use PDO;
 
 class ProductController
 {
-    protected PDO $db;
     protected array $supportedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
-
-    public function __construct(PDO $db)
-    {
-        $this->db=$db;
-    }
+    protected int $maxFileLength = 100;
 
     public function add($response)
     {
         $this->checkPermission();
-        $categories = $this->db->query("SELECT * FROM categories");
+        $categories = Utils::getDb()->query("SELECT * FROM categories");
         $categories = $categories->fetchAll(PDO::FETCH_CLASS);
         return $response->setBody('app/views/ProductForm.php', [
             'script' => 'add',
@@ -33,36 +28,33 @@ class ProductController
     public function edit($response)
     {
         $this->checkPermission();
-        if(isset($_GET['id']))
-        {
-            $product = $this->db->prepare("SELECT * FROM products WHERE id=:id");
-            $product->execute(['id'=>$_GET['id']]);
-            $product = $product->fetchAll(PDO::FETCH_CLASS);
-
-            $categories = $this->db->prepare("SELECT * FROM categories WHERE categories.id =
-                            (SELECT category_id FROM product_category WHERE categories.id = category_id AND product_id = :id)");
-            $categories->execute(['id'=>$_GET['id']]);
-            $categories = $categories->fetchAll(PDO::FETCH_CLASS);
-
-            new Model($this->db);
-            return $response->setBody('app/views/ProductForm.php', [
-                'product' => $product[0],
-                'product_categories' => $categories,
-                'categories' => Categories::GetAllCategories(),
-                'script' => 'edit'
-            ]);
+        if(!isset($_GET['id'])) {
+            throw new PageNotFoundException('Page you are looking for has not been found!');
         }
-        throw new PageNotFoundException('Page you are looking for has not been found!');
+        $product = Utils::getDb()->prepare("SELECT * FROM products WHERE id=:id");
+        $product->execute(['id'=>$_GET['id']]);
+        $product = $product->fetchAll(PDO::FETCH_CLASS);
+
+        $categories = Utils::getDb()->prepare("SELECT * FROM categories WHERE categories.id =
+                        (SELECT category_id FROM product_category WHERE categories.id = category_id AND product_id = :id)");
+        $categories->execute(['id'=>$_GET['id']]);
+        $categories = $categories->fetchAll(PDO::FETCH_CLASS);
+
+        return $response->setBody('app/views/ProductForm.php', [
+            'product' => $product[0],
+            'product_categories' => $categories,
+            'categories' => Categories::getAllCategories(),
+            'script' => 'edit'
+        ]);
     }
     public function remove()
     {
         $this->checkPermission();
-        if(isset($_GET['id']))
-        {
-            $delete = $this->db->prepare("DELETE FROM products WHERE id=:id");
+        if(isset($_GET['id'])) {
+            $delete = Utils::getDb()->prepare("DELETE FROM products WHERE id=:id");
             $delete->execute(['id'=>$_GET['id']]);
 
-            $delete = $this->db->prepare("DELETE FROM product_category WHERE product_id=:id");
+            $delete = Utils::getDb()->prepare("DELETE FROM product_category WHERE product_id=:id");
             $delete->execute(['id'=>$_GET['id']]);
         }
         header("Location: home");
@@ -70,10 +62,8 @@ class ProductController
 
     public function submit()
     {
-        if(isset($_POST['submit']))
-        {
-            if(!($_FILES['upload']['name'] == ''))
-            {
+        if(isset($_POST['submit'])) {
+            if (!($_FILES['upload']['name'] == '')) {
                 $target_dir = dirname(__DIR__) . "\images\\";
                 $target_file = $target_dir . basename($_FILES["upload"]["name"]);
                 //check for supported extensions
@@ -92,29 +82,25 @@ class ProductController
                     throw new FileUploadException("Failed to upload file!");
                 }
             }
-            $product = new Product($this->db, trim($_POST['name']), $_POST['price'], trim($_POST['description']), $_POST['quantity'], $_POST['categories'], basename($_FILES["upload"]["name"]), $_POST['id']);
-            if($_POST['script'] == 'add')
-            {
+            $product = new Product(trim($_POST['name']), $_POST['price'], trim($_POST['description']), $_POST['quantity'], $_POST['categories'], basename($_FILES["upload"]["name"]), $_POST['id']);
+            if ($_POST['script'] == 'add') {
                 $product->insertIntoDataBase();
-                $_POST['id'] = $this->db->lastInsertId();
-                $product->setId($this->db->lastInsertId());
-                foreach ($_POST['categories'] as $category)
-                {
-                    $product_category = $this->db->prepare("INSERT INTO product_category (product_id, category_id) VALUES (:product_id, :category_id)");
+                $_POST['id'] = Utils::getDb()->lastInsertId();
+                $product->setId(Utils::getDb()->lastInsertId());
+                foreach ($_POST['categories'] as $category) {
+                    $product_category = Utils::getDb()->prepare("INSERT INTO product_category (product_id, category_id) VALUES (:product_id, :category_id)");
                     $product_category->execute([
                         'product_id' => $_POST['id'],
                         'category_id' => $category
                     ]);
                 }
             }
-            if($_POST['script'] == 'edit')
-            {
+            if ($_POST['script'] == 'edit') {
                 $product->updateDatabase();
-                $delete = $this->db->prepare("DELETE FROM product_category WHERE product_id=:product_id");
+                $delete = Utils::getDb()->prepare("DELETE FROM product_category WHERE product_id=:product_id");
                 $delete->execute(['product_id' => $_POST['id']]);
-                foreach ($_POST['categories'] as $category)
-                {
-                    $product_category = $this->db->prepare("INSERT INTO product_category (product_id, category_id) VALUES (:product_id, :category_id)");
+                foreach ($_POST['categories'] as $category) {
+                    $product_category = Utils::getDb()->prepare("INSERT INTO product_category (product_id, category_id) VALUES (:product_id, :category_id)");
                     $product_category->execute([
                         'product_id' => $_POST['id'],
                         'category_id' => $category
@@ -127,15 +113,13 @@ class ProductController
 
     public function renderProduct($response)
     {
-        if(isset($_GET['id']))
-        {
-            new Model($this->db);
-            $product = $this->db->prepare("SELECT * FROM products WHERE id=:id");
+        if(isset($_GET['id'])) {
+            $product = Utils::getDb()->prepare("SELECT * FROM products WHERE id=:id");
             $product->execute(['id' => $_GET['id']]);
             $product = $product->fetchAll(PDO::FETCH_CLASS);
             return $response->setBody('app/views/ProductView.php', [
                 'product' => $product[0],
-                'categories' => Categories::GetCategoriesOfProduct($_GET['id'])
+                'categories' => Categories::getCategoriesOfProduct($_GET['id'])
             ]);
         }
         header('Location: home');
@@ -143,12 +127,13 @@ class ProductController
 
     protected function checkPermission()
     {
-        if(!isset($_SESSION['isAdmin']))
+        if(!isset($_SESSION['isAdmin'])) {
             throw new NoPermissionException('You do not have permission to do that!');
+        }
     }
 
     protected function checkFilenameLength ($filename)
     {
-        return mb_strlen($filename,"UTF-8") < 100;
+        return mb_strlen($filename,"UTF-8") < $this->maxFileLength;
     }
 }

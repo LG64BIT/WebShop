@@ -1,10 +1,12 @@
 <?php
 
-namespace app\exceptions;
+namespace App\exceptions;
 
-class NoPermissionException extends \Exception
+use Exception;
+
+class NoPermissionException extends Exception
 {
-    public function __construct($message="Permission needed for that action", $code=0 , \Exception $previous=NULL)
+    public function __construct($message="Permission needed for that action", $code=0 , Exception $previous=NULL)
     {
         $_SESSION['exceptionMessage'] = $message;
         parent::__construct($message, $code, $previous);

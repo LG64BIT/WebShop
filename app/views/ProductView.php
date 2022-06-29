@@ -1,7 +1,7 @@
 <?php
 include "Header.php";
 ?>
-<h1><?php echo $vars['product']->name; ?></h1>
+<h1><?= $vars['product']->name ?></h1>
 <div style="padding: 10px; max-width: 80%; margin: auto;">
 <?php
 echo "<p>";

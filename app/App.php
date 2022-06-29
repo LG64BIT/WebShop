@@ -1,20 +1,15 @@
 <?php
-namespace app;
+namespace App;
+
+use Exception;
 
 class App
 {
-    protected $container;
+    protected Container $container;
 
-    public function __construct()
+    public function __construct(Container $container)
     {
-        $this->container = new Container([
-            'router' => function() {
-                return new Router;
-            },
-            'response' => function() {
-                return new Response;
-            }
-        ]);
+        $this->container = $container;
     }
 
     public function getContainer(): Container
@@ -44,10 +39,11 @@ class App
         try {
             $response = $router->getResponse();
             return $this->respond($this->process($response)); //uncomment for redirecting to ErrorPage if exception happens somewhere
-        }catch (\Exception $e)
+        }catch (Exception $e)
         {
-            if($this->container->offsetExists('errorHandler'))
+            if($this->container->offsetExists('errorHandler')) {
                 $response = $this->container->errorHandler;
+            }
             else return null;
         }
         return $this->respond($this->process($response));
@@ -57,8 +53,9 @@ class App
     {
         $response = $this->container->response;
         if(is_array($callable)) {
-            if(!is_object($callable[0]))
+            if(!is_object($callable[0])) {
                 $callable[0] = new $callable[0];
+            }
             return call_user_func($callable, $response);
         }
         return $callable($response);
@@ -72,8 +69,9 @@ class App
         }
         header(sprintf('HTTP/%s %s %s', '1.1', $response->getStatusCode(), ''));
 
-        foreach ($response->getHeaders() as $header)
+        foreach ($response->getHeaders() as $header) {
             header($header[0] . ': ' . $header[1]);
+        }
         echo $response->getBody();
     }
 }

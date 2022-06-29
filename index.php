@@ -1,8 +1,29 @@
 <?php
+
+use App\App;
+use App\Container;
+use App\controllers\CartController;
+use App\controllers\HomeController;
+use App\controllers\LoginController;
+use App\controllers\OrderController;
+use App\controllers\ProductController;
+use App\controllers\RegisterController;
+use App\controllers\UserController;
+use App\Response;
+use App\Router;
+use App\Utils;
+
 require_once "autoloader/autoloader.php";
 
 session_start();
-$app = new app\App;
+$app = new App(new Container([
+            'router' => function() {
+                return new Router;
+            },
+            'response' => function() {
+                return new Response;
+            }
+        ]));
 $container = $app->getContainer();
 $container['config'] = function () {
     return [
@@ -26,42 +47,44 @@ $container['errorHandler'] = function () {
     };
 };
 
-$app->get('/', [new \app\controllers\HomeController($container->db), 'index']);
-$app->get('/home', [new \app\controllers\HomeController($container->db), 'index']);
-$app->get('/about', [new \app\controllers\HomeController($container->db), 'renderAbout']);
+Utils::setDb($container->db);
 
-$app->get('/register', [\app\controllers\RegisterController::class, 'register']);
-$app->post('/register/submit', [new \app\controllers\RegisterController($container->db), 'submit']);
+$app->get('/', [HomeController::class, 'index']);
+$app->get('/home', [HomeController::class, 'index']);
+$app->get('/about', [HomeController::class, 'renderAbout']);
 
-$app->get('/login', [\app\controllers\LoginController::class, 'login']);
-$app->post('/login/submit', [new \app\controllers\LoginController($container->db), 'submit']);
-$app->get('/logout', [\app\controllers\LoginController::class, 'logout']);
+$app->get('/register', [RegisterController::class, 'register']);
+$app->post('/register/submit', [RegisterController::class, 'submit']);
 
-$app->get('/cart', [new \app\controllers\CartController($container->db), 'render']);
-$app->get('/cart/add', [new \app\controllers\CartController($container->db), 'add']);
-$app->get('/cart/empty', [new \app\controllers\CartController($container->db), 'empty']);
-$app->get('/cart/addQuantity', [new \app\controllers\CartController($container->db), 'addQuantity']);
-$app->get('/cart/removeQuantity', [new \app\controllers\CartController($container->db), 'removeQuantity']);
-$app->post('/cart/order', [new \app\controllers\CartController($container->db), 'processOrder']);
-$app->get('/orderForm', [new \app\controllers\CartController($container->db), 'orderForm']);
+$app->get('/login', [LoginController::class, 'login']);
+$app->post('/login/submit', [LoginController::class, 'submit']);
+$app->get('/logout', [LoginController::class, 'logout']);
 
-$app->get('/allOrders', [new \app\controllers\OrderController($container->db), 'allOrders']);
-$app->get('/orderHistory', [new \app\controllers\OrderController($container->db), 'showHistory']);
-$app->post('/allOrders/updateUserStatus', [new \app\controllers\OrderController($container->db), 'updateUserStatus']);
-$app->post('/allOrders/updateGuestStatus', [new \app\controllers\OrderController($container->db), 'updateGuestStatus']);
+$app->get('/cart', [CartController::class, 'render']);
+$app->get('/cart/add', [CartController::class, 'add']);
+$app->get('/cart/empty', [CartController::class, 'empty']);
+$app->get('/cart/addQuantity', [CartController::class, 'addQuantity']);
+$app->get('/cart/removeQuantity', [CartController::class, 'removeQuantity']);
+$app->post('/cart/order', [CartController::class, 'processOrder']);
+$app->get('/orderForm', [CartController::class, 'orderForm']);
 
-$app->get('/product', [new \app\controllers\ProductController($container->db), 'renderProduct']);
-$app->get('/addProduct', [new \app\controllers\ProductController($container->db), 'add']);
-$app->get('/editProduct', [new \app\controllers\ProductController($container->db), 'edit']);
-$app->get('/removeProduct', [new \app\controllers\ProductController($container->db), 'remove']);
-$app->post('/addProduct/submit', [new \app\controllers\ProductController($container->db), 'submit']);
+$app->get('/allOrders', [OrderController::class, 'allOrders']);
+$app->get('/orderHistory', [OrderController::class, 'showHistory']);
+$app->post('/allOrders/updateUserStatus', [OrderController::class, 'updateUserStatus']);
+$app->post('/allOrders/updateGuestStatus', [OrderController::class, 'updateGuestStatus']);
 
-$app->get('/allUsers', [new \app\controllers\UserController($container->db), 'renderAllUsers']);
-$app->get('/editUser', [new \app\controllers\UserController($container->db), 'editUser']);
-$app->post('/editUser/submit', [new \app\controllers\UserController($container->db), 'submit']);
-$app->get('/removeUser', [new \app\controllers\UserController($container->db), 'removeUser']);
-$app->get('/profile', [new \app\controllers\UserController($container->db), 'renderProfile']);
-$app->post('/editUser/updatePassword', [new \app\controllers\UserController($container->db), 'updatePassword']);
-$app->post('/editUser/updateInfo', [new \app\controllers\UserController($container->db), 'updateInfo']);
+$app->get('/product', [ProductController::class, 'renderProduct']);
+$app->get('/addProduct', [ProductController::class, 'add']);
+$app->get('/editProduct', [ProductController::class, 'edit']);
+$app->get('/removeProduct', [ProductController::class, 'remove']);
+$app->post('/addProduct/submit', [ProductController::class, 'submit']);
+
+$app->get('/allUsers', [UserController::class, 'renderAllUsers']);
+$app->get('/editUser', [UserController::class, 'editUser']);
+$app->post('/editUser/submit', [UserController::class, 'submit']);
+$app->get('/removeUser', [UserController::class, 'removeUser']);
+$app->get('/profile', [UserController::class, 'renderProfile']);
+$app->post('/editUser/updatePassword', [UserController::class, 'updatePassword']);
+$app->post('/editUser/updateInfo', [UserController::class, 'updateInfo']);
 
 $app->run();

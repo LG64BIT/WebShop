@@ -6,29 +6,37 @@ $count=1;
     <table class="table" style="margin-left: auto; margin-right: auto;">
         <tr>
             <th>#</th>
-            <th style="text-align: center">Username</th>
-            <th style="text-align: center">Password hash</th>
+            <th style="text-align: center">First name</th>
+            <th style="text-align: center">Last name</th>
+            <th style="text-align: center">Email</th>
+            <th style="text-align: center">Address</th>
             <th style="text-align: center">Privileges</th>
             <th style="text-align: center">Edit</th>
             <th style="text-align: center">Remove</th>
         </tr>
         <?php foreach ($vars['users'] as $user): ?>
             <tr>
-                <th><?php echo $count++; ?></th>
+                <th><?= $count++ ?></th>
                 <td>
-                    <?php echo $user->username; ?>
+                    <?= $user->firstName == '' ? '<b>unset</b>' : $user->firstName ?>
                 </td>
                 <td>
-                    <?php echo $user->password; ?>
+                    <?= $user->lastName == '' ? '<b>unset</b>' : $user->lastName ?>
                 </td>
                 <td>
-                    <?php echo $user->isAdmin ? "Admin" : "Customer"; ?>
+                    <?= $user->email ?>
                 </td>
                 <td>
-                    <a class="btn btn-success" href="editUser?id=<?php echo $user->id; ?>">+</a>
+                    <?= $user->address == '' ? '<b>unset</b>' : $user->address ?>
                 </td>
                 <td>
-                    <a class="btn btn-danger" href="removeUser?id=<?php echo $user->id; ?>">-</a>
+                    <?= $user->isAdmin ? "Admin" : "Customer" ?>
+                </td>
+                <td>
+                    <a class="btn btn-success" href="editUser?id=<?= $user->id ?>">+</a>
+                </td>
+                <td>
+                    <a class="btn btn-danger" href="removeUser?id=<?= $user->id ?>">-</a>
                 </td>
             </tr>
         <?php endforeach; ?>

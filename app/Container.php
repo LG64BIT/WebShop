@@ -1,16 +1,20 @@
 <?php
 
-namespace app;
+namespace App;
 
-class Container implements \ArrayAccess
+use ArrayAccess;
+use ReturnTypeWillChange;
+
+class Container implements ArrayAccess
 {
     protected $items = [];
     protected $cache = [];
 
     public function __construct(array $items = [])
     {
-        foreach ($items as $key => $item)
+        foreach ($items as $key => $item) {
             $this->offsetSet($key, $item);
+        }
     }
 
     public function offsetExists($offset) : bool
@@ -18,29 +22,32 @@ class Container implements \ArrayAccess
         return isset($this->items[$offset]);
     }
 
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
-        if(!$this->offsetExists($offset))
+        if(!$this->offsetExists($offset)) {
             return null;
+        }
         $item = $this->items[$offset]($this);
-        if(isset($this->cache[$offset]))
+        if(isset($this->cache[$offset])) {
             return $this->cache[$offset];
+        }
         $this->cache[$offset] = $item;
         return $item;
     }
 
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         $this->items[$offset] = $value;
     }
 
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
-        if($this->offsetExists($offset))
+        if($this->offsetExists($offset)) {
             unset($this->items[$offset]);
+        }
     }
     public function __get($name)
     {
